@@ -1,0 +1,15 @@
+{
+  "name": "anya-warm-companion",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "web-push": "3.6.7"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

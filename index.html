@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anya</title>
+    <meta name="theme-color" content="#0a0710" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23120b16'/%3E%3Ccircle cx='32' cy='32' r='20' fill='%23ee74a5'/%3E%3Cpath d='M20 43 30 19h5l10 24h-7l-2-6h-9l-2 6zm9-12h5l-2.5-7z' fill='white'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="agent-shell">
+      <header class="topbar">
+        <div class="identity">
+          <span class="brand-mark" aria-hidden="true"><i></i></span>
+          <div class="identity-copy">
+            <h1>Anya</h1>
+            <span id="ai-status" class="ai-status offline">离线陪伴</span>
+          </div>
+        </div>
+        <div class="companion-tools">
+          <button id="new-chat" class="new-chat" type="button"><span aria-hidden="true">＋</span>新对话</button>
+          <button id="voice-toggle" type="button"><span class="tool-sound" aria-hidden="true"></span>开启声音</button>
+          <button id="memory-view" type="button"><span class="tool-memory" aria-hidden="true"></span>记忆</button>
+          <button id="diary-view" type="button"><span class="tool-diary" aria-hidden="true"></span>心情</button>
+          <button id="care-view" type="button"><span class="tool-care" aria-hidden="true"></span>关心</button>
+        </div>
+      </header>
+
+      <section class="agent-stage" aria-label="Anya语音智能体">
+        <div class="stage-grid" aria-hidden="true"></div>
+        <div class="ambient ambient-one" aria-hidden="true"></div>
+        <div class="ambient ambient-two" aria-hidden="true"></div>
+        <div class="quick-actions" aria-label="快速聊天选项">
+          <button type="button" data-message="ちょっと疲れた">ちょっと疲れた</button>
+          <button type="button" data-message="うれしいことがあった">うれしいこと</button>
+          <button type="button" data-message="少し遊ぼう">少し遊ぼう</button>
+          <button type="button" data-message="応援して">応援して</button>
+        </div>
+        <div class="companion-stage" aria-label="Anya动态形象">
+          <div class="presence-field" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div id="voice-spectrum" class="voice-spectrum" aria-hidden="true"></div>
+          <div class="avatar-halo" role="button" tabindex="0" aria-label="点击与Anya说话">
+            <div class="avatar-frame">
+              <img id="anya-avatar" class="avatar" src="anya-avatar.jpg" alt="Anya头像" />
+            </div>
+          </div>
+        </div>
+        <p id="mood-label" class="mood-label">聞いている最中です</p>
+        <p id="relationship-label" class="relationship-label">正在慢慢认识你</p>
+        <p id="live-caption" class="live-caption"></p>
+        <button id="voice-input" class="talk-button" type="button" aria-label="开始语音输入">
+          <span class="voice-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="talk-label">話しかける</span>
+        </button>
+      </section>
+
+      <footer class="interaction-dock">
+        <details class="conversation-panel">
+          <summary><span aria-hidden="true"></span>查看文字对话</summary>
+          <section id="chat-messages" class="messages" aria-live="polite"></section>
+        </details>
+
+        <form id="chat-form" class="chat-form">
+          <label class="sr-only" for="user-input">输入你想说的话</label>
+          <span class="input-orb" aria-hidden="true"></span>
+          <input id="user-input" type="text" autocomplete="off" />
+          <button type="submit">打ち明ける<span aria-hidden="true">↗</span></button>
+        </form>
+      </footer>
+    </main>
+
+    <dialog id="memory-dialog" class="memory-dialog" aria-labelledby="memory-title">
+      <div class="memory-card">
+        <header>
+          <div>
+            <p>PRIVATE MEMORY</p>
+            <h2 id="memory-title">Anya 的长期记忆</h2>
+          </div>
+          <button id="memory-close" class="memory-close" type="button" aria-label="关闭记忆面板">×</button>
+        </header>
+        <p class="memory-note">只保存在这台设备的浏览器中。Anya 会在合适的时候自然地记起，而不是重复背诵。</p>
+        <div id="memory-list" class="memory-list"></div>
+        <footer>
+          <span id="memory-count">0 条记忆</span>
+          <button id="memory-clear" class="memory-clear" type="button">清除全部记忆</button>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog id="diary-dialog" class="memory-dialog diary-dialog" aria-labelledby="diary-title">
+      <div class="memory-card">
+        <header>
+          <div>
+            <p>EMOTION JOURNAL</p>
+            <h2 id="diary-title">最近的心情轨迹</h2>
+          </div>
+          <button id="diary-close" class="memory-close" type="button" aria-label="关闭心情日记">×</button>
+        </header>
+        <div class="diary-setting">
+          <div><strong>自动记录</strong><span>只记录大致趋势，不是心理诊断</span></div>
+          <label class="switch"><input id="diary-enabled" type="checkbox" checked /><span></span></label>
+        </div>
+        <div id="emotion-growth" class="emotion-growth" aria-live="polite"></div>
+        <div id="diary-list" class="diary-list"></div>
+        <footer>
+          <span id="diary-count">0 天记录</span>
+          <button id="diary-clear" class="memory-clear" type="button">清除情绪日记</button>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog id="care-dialog" class="memory-dialog care-dialog" aria-labelledby="care-title">
+      <form id="care-form" class="memory-card">
+        <header>
+          <div>
+            <p>GENTLE CHECK-IN</p>
+            <h2 id="care-title">主动关心</h2>
+          </div>
+          <button id="care-close" class="memory-close" type="button" aria-label="关闭主动关心设置">×</button>
+        </header>
+        <p class="memory-note">每天最多一条。内容会参考你最近的心情和话题，不会催促你回复。</p>
+        <div class="diary-setting care-master">
+          <div><strong>允许 Anya 主动联系</strong><span id="care-permission-status">当前未开启</span></div>
+          <label class="switch"><input id="care-enabled" type="checkbox" /><span></span></label>
+        </div>
+        <div class="care-time-grid">
+          <label><span>关心时间</span><input id="care-time" type="time" value="19:30" required /></label>
+          <label><span>免打扰开始</span><input id="quiet-start" type="time" value="22:00" required /></label>
+          <label><span>免打扰结束</span><input id="quiet-end" type="time" value="08:00" required /></label>
+        </div>
+        <p id="care-feedback" class="care-feedback" aria-live="polite"></p>
+        <footer class="care-actions">
+          <button id="care-test" class="care-test" type="button">发送测试通知</button>
+          <button class="care-save" type="submit">保存设置</button>
+        </footer>
+      </form>
+    </dialog>
+    <script src="script.js"></script>
+  </body>
+</html>

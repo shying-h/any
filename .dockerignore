@@ -1,0 +1,9 @@
+node_modules
+.env
+请在这里填写密钥.txt
+微信配置.txt
+.anya-proactive.json
+.anya-wechat.json
+.git
+.gitignore
+npm-debug.log
